@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import Logo from "../../assets/logo.png"
+import { Link } from "react-router-dom"
 
 
 const StyledHeaderDiv = styled.div`
@@ -28,7 +29,7 @@ const Header = () => {
     return (
         <>
             <StyledHeaderDiv>
-                <StyledLogo src={Logo}/>
+                <Link to={'/'} > <StyledLogo src={Logo}/> </Link>
                 <StyledTitle> Sistema de Votação </StyledTitle>
             </StyledHeaderDiv>
         </>

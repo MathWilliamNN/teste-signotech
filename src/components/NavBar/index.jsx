@@ -45,7 +45,7 @@ const NavBar = () => {
     return (
         <>
             <StyledNav>
-                <StyledLink to={"/create"}> <MdCreateNewFolder /> Criar Enquete </StyledLink>
+                <StyledLink to={"/CreatePoll"}> <MdCreateNewFolder /> Criar Enquete </StyledLink>
             </StyledNav>
         </>
     )
