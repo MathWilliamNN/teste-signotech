@@ -5,6 +5,7 @@ import { MdCreateNewFolder } from "react-icons/md";
 
 const StyledNav = styled.aside`
     width: 15vw;
+    height: 50vh;
     display: flex;
     flex-direction: column;
 

@@ -1,8 +1,15 @@
 import styled from "styled-components"
+import PollProperties from "./PollProperties"
 
 
 const DisplayContainer = styled.div`
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+
     width: 80vw;
+    height: 50%;
     padding: .5rem;
 
     background-color: var(--offwhite);
@@ -14,7 +21,11 @@ const DisplayContainer = styled.div`
 const PollDisplay = () => {
     return (
         <>
-            <DisplayContainer> display </DisplayContainer>
+            <DisplayContainer> 
+                <PollProperties header/>
+                {/* a partir daqui fazer um .map  */}
+                <PollProperties/>
+            </DisplayContainer>
         </>
     )
 
