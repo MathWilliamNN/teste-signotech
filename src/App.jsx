@@ -1,3 +1,4 @@
+import { PollContextProvider } from "./context"
 import AppRoutes from "./Routes"
 
 function App() {
@@ -5,7 +6,9 @@ function App() {
 
   return (
     <>
-        <AppRoutes/>
+      <PollContextProvider>
+        <AppRoutes />
+      </PollContextProvider>
     </>
   )
 }

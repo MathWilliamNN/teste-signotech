@@ -1,17 +1,17 @@
 import styled from "styled-components"
 import PollCreationForm from "../../components/PollCreationForm"
 
-
 const StyledTitle = styled.h2`
     color: var(--gray);
     font-size: 2rem;
     font-family: var(--font-primary);
     font-weight: 600;
+    padding-bottom: 1rem;
 `
 const StyledContainer = styled.div`
+    padding: 2rem 2rem;
     width: 80vw;
     height: 50%;
-    padding: .5rem;
 
     display: flex;
     flex-direction: column;

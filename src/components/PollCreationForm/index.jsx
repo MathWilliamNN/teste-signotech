@@ -1,5 +1,7 @@
 import styled from "styled-components"
-import PollQuestion from "./PollQuestion"
+import PollQuestions from "./PollQuestions"
+import { useContext } from "react"
+import { PollContext } from "../../context"
 
 
 const PollFormContainer = styled.section`
@@ -16,6 +18,7 @@ const StyledAddQuestionButton = styled.button`
     color: var(--offwhite);
     font-family: var(--font-primary);
     font-size: 1.2rem;
+    font-weight: 600;
 
     border-radius: .5rem;
     border: none;
@@ -36,15 +39,32 @@ const StyledQuestionsContainer = styled.div`
     flex-direction: column;
     gap: 1rem;
 `
+
 const PollCreationForm = () => {
+
+    const { pollStructure, setPollStructure } = useContext(PollContext);
+
+
+const addQuestion = (questionType) => {
+    console.log(questionType);
+    const openQuestion = {
+        id: pollStructure.length + 1,
+        type: questionType,
+    };
+
+    setPollStructure([...pollStructure, openQuestion]);
+};
+
+console.log(pollStructure);
     return (
+        
         <PollFormContainer>
             <StyledButtonsContainer>
-                <StyledAddQuestionButton> Adicionar questão aberta </StyledAddQuestionButton>
-                <StyledAddQuestionButton> Adicionar questão fechada </StyledAddQuestionButton>
-            </StyledButtonsContainer>
+                <StyledAddQuestionButton onClick={()=> addQuestion("open")}> Adicionar questão aberta </StyledAddQuestionButton>
+                <StyledAddQuestionButton onClick={()=> addQuestion("closed")}> Adicionar questão fechada </StyledAddQuestionButton>
+            </StyledButtonsContainer>   
             <StyledQuestionsContainer>
-                <PollQuestion/>
+                <PollQuestions />
             </StyledQuestionsContainer>
         </PollFormContainer>
     )
