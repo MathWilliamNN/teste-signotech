@@ -22,7 +22,38 @@ const PollProperty = styled.h2`
     }
 `;
 
-const PollProperties = ({ header }) => {
+const PollProperties = ({ header, title, startingDate, finishingDate }) => {
+
+    const formatDate = (ISOdate) => {
+        console.log(ISOdate);
+        const date = new Date(ISOdate);
+        console.log('data:' , date)
+        const day = String(date.getDate()).padStart(2, '0');
+        console.log('dia:' , day)
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        console.log('mes:' , month)
+        const year = String(date.getFullYear()); 
+        console.log('ano:' , year)
+
+
+        return `${day}-${month}-${year}`;
+    }
+
+    const getStatus = (startingDate, finishingDate) => {
+
+        const todayDate = new Date();
+        const start = new Date(startingDate);
+        const finish = new Date(finishingDate);
+    
+        if (todayDate < start) {
+            return "Não iniciada";
+        } else if (start <= todayDate && todayDate <= finish) {  
+            return "Em andamento";
+        } else {
+            return "Finalizada";
+        }
+    };
+
     return header ?
 
         <StyledPoll>
@@ -35,10 +66,10 @@ const PollProperties = ({ header }) => {
         :
 
         <StyledPoll>
-            <PollProperty> Nome da enquete</PollProperty>
-            <PollProperty> Data de inicio </PollProperty>
-            <PollProperty> Data de término </PollProperty>
-            <PollProperty> Status </PollProperty>
+            <PollProperty> {title} </PollProperty>
+            <PollProperty> {formatDate(startingDate)} </PollProperty>
+            <PollProperty> {formatDate(finishingDate)} </PollProperty>
+            <PollProperty> {getStatus(startingDate, finishingDate)} </PollProperty>
         </StyledPoll>
 }
 

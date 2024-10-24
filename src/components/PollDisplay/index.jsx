@@ -1,5 +1,7 @@
 import styled from "styled-components"
 import PollProperties from "./PollProperties"
+import { useContext } from "react"
+import { PollContext } from "../../context"
 
 
 const DisplayContainer = styled.div`
@@ -18,13 +20,17 @@ const DisplayContainer = styled.div`
 
 `
 
+
 const PollDisplay = () => {
+    const {createdPolls} = useContext(PollContext);
+    console.log(createdPolls);
     return (
         <>
             <DisplayContainer> 
                 <PollProperties header/>
-                {/* a partir daqui fazer um .map  */}
-                <PollProperties/>
+                    {createdPolls.map((poll) => (
+                        <PollProperties title={poll.title} startingDate={poll.startingDate} finishingDate={poll.finishingDate}/>
+                    ))}
             </DisplayContainer>
         </>
     )

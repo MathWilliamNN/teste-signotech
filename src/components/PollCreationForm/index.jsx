@@ -46,7 +46,6 @@ const PollCreationForm = () => {
 
 
 const addQuestion = (questionType) => {
-    console.log(questionType);
     const openQuestion = {
         id: pollStructure.length + 1,
         type: questionType,
@@ -55,7 +54,6 @@ const addQuestion = (questionType) => {
     setPollStructure([...pollStructure, openQuestion]);
 };
 
-console.log(pollStructure);
     return (
         
         <PollFormContainer>
