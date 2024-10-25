@@ -1,7 +1,7 @@
-import styled from "styled-components"
-import PollProperties from "./PollProperties"
 import { useContext } from "react"
+import styled from "styled-components"
 import { PollContext } from "../../context"
+import PollProperties from "./PollProperties"
 
 
 const DisplayContainer = styled.div`
@@ -22,7 +22,10 @@ const DisplayContainer = styled.div`
 
 
 const PollDisplay = () => {
+
     const {createdPolls} = useContext(PollContext);
+
+
     return (
         <>
             <DisplayContainer>

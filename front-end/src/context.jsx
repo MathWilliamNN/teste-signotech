@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 
 export const PollContext = createContext()
@@ -7,11 +7,79 @@ export const PollContextProvider = ({children}) => {
 
     const [pollStructure, setPollStructure] = useState([]);
     const [createdPolls, setCreatedPolls] = useState([]);
+    const [pollsQuestions, setPollsQuestions] = useState([]);
+    const [questionsOptions, setQuestionsOptions] = useState([]);
     const [answers, setAnswers] = useState([])
     const [pollResults, setPollResults] = useState([])
 
+    const formatDate = (ISOdate) => {
+        const date = new Date(ISOdate);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = String(date.getFullYear());
 
+        return `${day}-${month}-${year}`;
+    }
 
+    const fetchPollsFromDatabase = () => {
+        return fetch('http://localhost:5000/polls')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar enquetes');
+                }
+                return response.json();
+            })
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                throw error; 
+            });
+    };
+
+    const fetchPollsQuestionsFromDatabase = () => {
+        return fetch('http://localhost:5000/questions')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar perguntas');
+                }
+                return response.json();
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                throw error; 
+            });
+    };
+
+    const fetchQuestionsOptionsFromDatabase = () => {
+        return fetch('http://localhost:5000/options')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar perguntas');
+                }
+                return response.json();
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                throw error;
+            });
+    };
+
+    const fetchPollsResultsFromDatabase = () => {
+        return fetch('http://localhost:5000/responses')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar perguntas');
+                }
+                return response.json();
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                throw error;
+            });
+    };
+    
     const postPollToDataBase = (pollData) => {
         return fetch('http://localhost:5000/polls', {
             method: 'POST',
@@ -27,11 +95,11 @@ export const PollContextProvider = ({children}) => {
         .then(response => response.json())
         .then(data => {
             console.log('Enquete criada:', data);
-            return data.id; // Retorna o ID da enquete criada
+            return data.id;
         })
         .catch(error => {
             console.error('Erro ao criar enquete:', error);
-            throw error; // Propaga o erro para o próximo then
+            throw error;
         });
     };
 
@@ -46,11 +114,11 @@ export const PollContextProvider = ({children}) => {
         .then(response => response.json())
         .then(data => {
             console.log('Pergunta criada:', data);
-            return data.id; // Retorna o ID da pergunta criada
+            return data.id;
         })
         .catch(error => {
             console.error('Erro ao criar pergunta:', error);
-            throw error; // Propaga o erro
+            throw error;
         });
     };
 
@@ -65,14 +133,36 @@ export const PollContextProvider = ({children}) => {
         .then(response => response.json())
         .then(data => {
             console.log('Opção criada:', data);
-            return data.id; // Retorna o ID da opção criada
+            return data.id;
         })
         .catch(error => {
             console.error('Erro ao criar opção:', error);
-            throw error; // Propaga o erro
+            throw error;
         });
     };
     
+    const postResultsToDataBase = (resultsData) => {
+        return fetch('http://localhost:5000/responses', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                poll_id: resultsData.poll_id,
+                question_id: resultsData.question_id,
+                answer: resultsData.answer
+            }), 
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Resultados registrados', data);
+        })
+        .catch(error => {
+            console.error('Erro ao registrar resultado:', error);
+            throw error;
+        });
+    };
+
     const createQuestionsAndOptions = (pollId, questions) => {
         return Promise.all(questions.map(question => {
             return postQuestionsToDataBase({
@@ -105,9 +195,72 @@ export const PollContextProvider = ({children}) => {
             });
     };
 
+    useEffect(() => {
+        const getPolls = async () => {
+            try {
+                const polls = await fetchPollsFromDatabase();
+                const formattedPolls = polls.map(poll => ({
+                    ...poll,
+                    starting_date: formatDate(poll.starting_date),
+                    finishing_date: formatDate(poll.finishing_date),
+                }));
+
+                setCreatedPolls(formattedPolls);
+                
+            } catch (error) {
+                console.error('Erro ao buscar enquetes:', error);
+            }
+        };
+
+        getPolls();
+    }, []);
+
+    useEffect(() => {
+        const getPollsQuestions = async () => {
+            try {
+                const fetchedPollsQuestions = await fetchPollsQuestionsFromDatabase();
+                setPollsQuestions(fetchedPollsQuestions);
+            } catch (error) {
+                console.error('Erro ao buscar perguntas:', error);
+            }
+        };
+    
+        getPollsQuestions();
+    }, []);
+
+    useEffect(() => {
+        const getQuestionsOptions = async () => {
+            try {
+                const fetchedQuestionsOptions = await fetchQuestionsOptionsFromDatabase();
+                setQuestionsOptions(fetchedQuestionsOptions);
+            } catch (error) {
+                console.error('Erro ao buscar perguntas:', error);
+            }
+        };
+    
+        getQuestionsOptions();
+    }, []);
+
+    useEffect(() => {
+        const getPollsResults = async () => {
+            try {
+                const fetchedPollsResults = await fetchPollsResultsFromDatabase();
+                setPollResults(fetchedPollsResults);
+                console.log(pollResults);
+            } catch (error) {
+                console.error('Erro ao buscar perguntas:', error);
+            }
+        };
+    
+        getPollsResults();
+    }, []);
+    
+
+
+
 
     return (
-        <PollContext.Provider value={{pollStructure, setPollStructure, createdPolls, setCreatedPolls, answers, setAnswers, pollResults, setPollResults, createPoll}}>
+        <PollContext.Provider value={{pollStructure, setPollStructure, createdPolls, setCreatedPolls, answers, setAnswers, pollResults, setPollResults, createPoll, formatDate, fetchPollsFromDatabase, pollsQuestions, questionsOptions, postResultsToDataBase}}>
             {children}
         </PollContext.Provider>
     )

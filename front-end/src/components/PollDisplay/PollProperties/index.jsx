@@ -1,6 +1,8 @@
 import styled from "styled-components"
 import { FaWpforms } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { PollContext } from "../../../context";
 
 const StyledPoll = styled.div`
     display: grid;
@@ -35,24 +37,25 @@ const StyledLink = styled(Link)`
 
 const PollProperties = ({ header, poll }) => {
 
-    const formatDate = (ISOdate) => {
-        const date = new Date(ISOdate);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = String(date.getFullYear());
 
-        return `${day}-${month}-${year}`;
-    }
+    const {formatDate} = useContext(PollContext);
+
+
+    const convertDateToISO = (dateString) => {
+        const [day, month, year] = dateString.split('-').map(Number);
+        const fullYear = year < 100 ? 2000 + year : year; 
+        return new Date(fullYear, month - 1, day).toISOString().split('T')[0];
+    };
 
     const getStatus = (startingDate, finishingDate) => {
-
-        const todayDate = new Date();
-        const start = new Date(startingDate);
-        const finish = new Date(finishingDate);
-
-        if (todayDate < start) {
+        const isoStartingDate = convertDateToISO(startingDate);
+        const isoFinishingDate = convertDateToISO(finishingDate);
+        
+        const todayDate = new Date().toISOString().split('T')[0];
+    
+        if (todayDate < isoStartingDate) {
             return "Não iniciada";
-        } else if (start <= todayDate && todayDate <= finish) {
+        } else if (isoStartingDate <= todayDate && todayDate <= isoFinishingDate) {
             return "Em andamento";
         } else {
             return "Finalizada";
@@ -70,20 +73,20 @@ const PollProperties = ({ header, poll }) => {
         </StyledPoll>
 
         :
-
+    
         <StyledPoll>
             <PollProperty>
                 {poll.title}
 
-                {getStatus(poll.startingDate, poll.finishingDate) === "Em andamento" && (
+                {getStatus(poll.starting_date, poll.finishing_date) === "Em andamento" && (
                     <StyledLink to={`/AnswerPoll/${poll.id}`}>
                         <FaWpforms size={25} /> Responder
                     </StyledLink>
                 )}
             </PollProperty>
-            <PollProperty> {formatDate(poll.startingDate)} </PollProperty>
-            <PollProperty> {formatDate(poll.finishingDate)} </PollProperty>
-            <PollProperty> {getStatus(poll.startingDate, poll.finishingDate)} </PollProperty>
+            <PollProperty> {poll.starting_date} </PollProperty>
+            <PollProperty> {poll.finishing_date} </PollProperty>
+            <PollProperty> {getStatus(poll.starting_date, poll.finishing_date)} </PollProperty>
         </StyledPoll>
 }
 

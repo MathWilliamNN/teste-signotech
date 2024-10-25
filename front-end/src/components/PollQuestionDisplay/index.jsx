@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import styled from "styled-components"
 import { PollContext } from "../../context"
 import { FaPoll } from "react-icons/fa";
@@ -57,43 +57,54 @@ const StyledResultsDisplay = styled.span`
 
 const PollQuestionDisplay = ({ question, handleAnswerChange }) => {
 
-    const { pollResults } = useContext(PollContext);
+    
+    const { pollResults, questionsOptions } = useContext(PollContext);
+    const [votes, setVotes] = useState({});
 
-    const calculateVotes = (questionId) => {
-        let voteCount = {};
+    const options = questionsOptions.filter((option) => option.question_id === question.id);
 
-        pollResults.forEach(result => {
-            const answer = result.answers[questionId];
-            if (answer) {
-                voteCount[answer] = (voteCount[answer] || 0) + 1;
-            }
-        });
 
-        return voteCount;
-    };
+    useEffect(() => {
+        const calculateVotes = () => {
+            let voteCount = {};
+            pollResults.forEach(result => {
+                if (result.question_id === question.id) {
+                    voteCount[result.answer] = (voteCount[result.answer] || 0) + 1;
+                }
+            });
+            setVotes(voteCount);
+        };
 
-    const votes = calculateVotes(question.id);
+        calculateVotes();
+    }, [pollResults, question.id]);
+    
+
 
     return (
         <StyledQuestionContainer>
-            <StyledQuestionText> {question.id}. {question.question} </StyledQuestionText>
+            <StyledQuestionText>{question.id}. {question.question}</StyledQuestionText>
             {question.type === 'closed' ? (
-                question.options.map((option, index) => (
-                    <StyledOptionsLabel key={index} >
+                options.map((option, index) => (
+                    <StyledOptionsLabel key={index}>
                         <StyledOptionInput
                             type="radio"
                             name={`question_${question.id}`}
-                            value={option}
+                            value={option.option_text}
                             onChange={(e) => handleAnswerChange(question.id, e.target.value)} />
-                        {option} 
-                        <StyledResultsDisplay> <FaPoll/> {votes[option] || 0} </StyledResultsDisplay>
+                        {option.option_text}
+                        <StyledResultsDisplay>
+                            <FaPoll /> {votes[option.option_text] || 0}
+                        </StyledResultsDisplay>
                     </StyledOptionsLabel>
                 ))
-            ) :
-            <StyledTextInput type="text" placeholder="Digite sua resposta..." onChange={(e) => handleAnswerChange(question.id, e.target.value)} />
-            }
+            ) : (
+                <StyledTextInput
+                    type="text"
+                    placeholder="Digite sua resposta..."
+                    onChange={(e) => handleAnswerChange(question.id, e.target.value)} />
+            )}
         </StyledQuestionContainer>
-    )
+    );
 
 }
 

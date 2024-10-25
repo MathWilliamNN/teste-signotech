@@ -27,7 +27,8 @@ app.use(cors());
 
 // ===================== TABELA polls ===================== //
 
-// Rota GET para obter todas as enquetes
+// Rota Get
+
 app.get('/polls', (req, res) => {
     const sql = 'SELECT * FROM polls';
     connection.query(sql, (error, results) => {
@@ -38,7 +39,7 @@ app.get('/polls', (req, res) => {
     });
 });
 
-// Rota POST para criar uma nova enquete
+// Rota POST 
 app.post('/polls', (req, res) => {
     const { title, starting_date, finishing_date } = req.body;
     const sql = 'INSERT INTO polls (title, starting_date, finishing_date) VALUES (?, ?, ?)';
@@ -53,7 +54,7 @@ app.post('/polls', (req, res) => {
 
 // ===================== TABELA questions ===================== //
 
-// Rota GET para obter todas as perguntas
+// Rota GET 
 app.get('/questions', (req, res) => {
     const sql = 'SELECT * FROM questions';
     connection.query(sql, (error, results) => {
@@ -64,7 +65,7 @@ app.get('/questions', (req, res) => {
     });
 });
 
-// Rota POST para criar uma nova pergunta
+// Rota POST
 app.post('/questions', (req, res) => {
     const { poll_id, question, type } = req.body;
     const sql = 'INSERT INTO questions (poll_id, question, type) VALUES (?, ?, ?)';
@@ -79,7 +80,7 @@ app.post('/questions', (req, res) => {
 
 // ===================== TABELA options ===================== //
 
-// Rota GET para obter todas as opções
+// Rota GET
 app.get('/options', (req, res) => {
     const sql = 'SELECT * FROM options';
     connection.query(sql, (error, results) => {
@@ -90,7 +91,7 @@ app.get('/options', (req, res) => {
     });
 });
 
-// Rota POST para criar uma nova opção
+// Rota POST
 app.post('/options', (req, res) => {
     const { question_id, option_text } = req.body;
     const sql = 'INSERT INTO options (question_id, option_text) VALUES (?, ?)';
@@ -105,7 +106,7 @@ app.post('/options', (req, res) => {
 
 // ===================== TABELA responses ===================== //
 
-// Rota GET para obter todas as respostas
+// Rota GET
 app.get('/responses', (req, res) => {
     const sql = 'SELECT * FROM responses';
     connection.query(sql, (error, results) => {
@@ -116,7 +117,7 @@ app.get('/responses', (req, res) => {
     });
 });
 
-// Rota POST para criar uma nova resposta
+// Rota POST
 app.post('/responses', (req, res) => {
     const { poll_id, question_id, answer } = req.body;
     const sql = 'INSERT INTO responses (poll_id, question_id, answer) VALUES (?, ?, ?)';
@@ -125,11 +126,12 @@ app.post('/responses', (req, res) => {
         if (error) {
             return res.status(500).json({ error });
         }
-        res.status(201).json({ id: results.insertId, poll_id, question_id, answer });
+        res.status(201).json({poll_id, question_id, answer });
     });
 });
 
-// Iniciando o servidor Express
+
+
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });

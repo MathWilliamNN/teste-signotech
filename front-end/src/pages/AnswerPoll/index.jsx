@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { PollContext } from "../../context";
 import { Link, useParams } from "react-router-dom";
@@ -66,46 +66,51 @@ const StyledLink = styled(Link)`
 `
 
 const AnswerPoll = () => {
-
-    const { createdPolls, answers, setAnswers, pollResults, setPollResults } = useContext(PollContext);
+    const { createdPolls, pollsQuestions, answers, setAnswers, postResultsToDataBase } = useContext(PollContext);
     const [answerSubmitted, setAnswerSubmitted] = useState(false);
-
     const params = useParams();
-    const poll = createdPolls.find((poll) => {
-        return poll.id === Number(params.id);
-    })
 
+    const poll = createdPolls.find((poll) => poll.id === Number(params.id));
+    const questions = pollsQuestions.filter((question) => question.poll_id === Number(params.id));
+
+    if (!poll) {
+        return (
+            <StyledContainer>
+                <StyledPollTitle>Enquete não encontrada.</StyledPollTitle>
+                <StyledLink to={"/"}>Voltar</StyledLink>
+            </StyledContainer>
+        );
+    }
 
     const handleAnswerChange = (questionId, answer) => {
         setAnswers((prevAnswers) => ({
             ...prevAnswers,
-            [questionId]: answer
+            [questionId]: answer 
         }));
     };
 
     const handleSubmit = () => {
 
-        const resultId = pollResults.length + 1;
-        const newResult = {
-            pollId: poll.id,
-            resultDd: resultId,
-            answers: answers,
-        };
+        const newResults = Object.entries(answers).map(([questionId, answer]) => ({
+            poll_id: poll.id,
+            question_id: Number(questionId), 
+            answer: answer 
+        }));
 
-        setPollResults([...pollResults, newResult]);
+        postResultsToDataBase(newResults[0]);
         setAnswerSubmitted(true);
     };
 
     return (
         answerSubmitted ? (
             <StyledContainer>
-                <StyledPollTitle>Obrigado por responder !</StyledPollTitle>
-                <StyledLink to={"/"} > Voltar </StyledLink>
+                <StyledPollTitle>Obrigado por responder!</StyledPollTitle>
+                <StyledLink to={"/"}>Voltar</StyledLink>
             </StyledContainer>
         ) : (
             <StyledContainer>
                 <StyledPollTitle>{poll.title}</StyledPollTitle>
-                {poll.questions.map((question) => (
+                {questions.map((question) => (
                     <PollQuestionDisplay
                         key={question.id}
                         question={question}
@@ -116,6 +121,8 @@ const AnswerPoll = () => {
             </StyledContainer>
         )
     );
-}
+};
 
-export default AnswerPoll
+export default AnswerPoll;
+
+
