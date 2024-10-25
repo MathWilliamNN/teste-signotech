@@ -90,14 +90,14 @@ const AnswerPoll = () => {
     };
 
     const handleSubmit = () => {
-
         const newResults = Object.entries(answers).map(([questionId, answer]) => ({
             poll_id: poll.id,
             question_id: Number(questionId), 
             answer: answer 
         }));
-
-        postResultsToDataBase(newResults[0]);
+    
+        newResults.forEach(result => postResultsToDataBase(result));
+        
         setAnswerSubmitted(true);
     };
 

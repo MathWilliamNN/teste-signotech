@@ -62,6 +62,8 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou env
 
 ## Planos futuros
 
-Alguns bugs ainda não foram corrigidos, como a exibição em tempo real dos votos e a data de início e finalização, porém, atualizar a página é uma solução temporária e permite o uso adequado do aplicativo
+Alguns bugs ainda não foram corrigidos:
+1. A exibição dos votos e a data de início e finalização não está atualizando em tempo real, porém, atualizar a página é uma solução temporária e permite o uso adequado do aplicativo.
+2. Ocasionalmente a tela nao carrega, novamente atualizar a página resolve. Está associado às datas de início/fim.
 
 
