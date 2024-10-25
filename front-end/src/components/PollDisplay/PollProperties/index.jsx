@@ -2,8 +2,6 @@ import styled from "styled-components"
 import { FaWpforms } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-
-
 const StyledPoll = styled.div`
     display: grid;
     grid-template-columns: 60% 1fr 1fr 1fr; 

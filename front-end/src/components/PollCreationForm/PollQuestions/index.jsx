@@ -82,7 +82,7 @@ const StyledSubmitButton = styled.button`
 `;
 
 const PollQuestions = () => {
-    const { pollStructure, setPollStructure, createdPolls, setCreatedPolls } = useContext(PollContext);
+    const { pollStructure, setPollStructure, createdPolls, setCreatedPolls, createPoll } = useContext(PollContext);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -116,7 +116,11 @@ const PollQuestions = () => {
 
         setPollStructure([]);
         setCreatedPolls([...createdPolls, pollData]);
+
+        createPoll(pollData, questions);
     };
+
+
 
     return (
         pollStructure.length > 0 ? (
